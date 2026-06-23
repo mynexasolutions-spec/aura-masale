@@ -159,7 +159,218 @@ export async function saveProductInformation(
   return { success: true }
 }
 
-// ─── Product FAQ CRUD ────────────────────────────────────
+// ─── Product Image CRUD ────────────────────────────────────
+
+export async function addProductImage(
+  productId: string,
+  imageUrl: string
+): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  // Get max sort_order
+  const { data: maxSort } = await supabase
+    .from('product_images')
+    .select('sort_order')
+    .eq('product_id', productId)
+    .order('sort_order', { ascending: false })
+    .limit(1)
+    .single()
+
+  const nextSort = maxSort ? maxSort.sort_order + 1 : 0
+
+  const { error } = await supabase.from('product_images').insert({
+    product_id: productId,
+    image_url: imageUrl,
+    sort_order: nextSort,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  // If this is the only image, automatically set it as featured
+  if (nextSort === 0) {
+    await supabase
+      .from('products')
+      .update({ featured_image_url: imageUrl })
+      .eq('id', productId)
+  }
+
+  revalidatePath(`/admin/products/${productId}/edit`)
+  return { success: true }
+}
+
+export async function deleteProductImage(imageId: string, productId: string): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  // Check if this is the featured image before deleting
+  const { data: image } = await supabase
+    .from('product_images')
+    .select('image_url')
+    .eq('id', imageId)
+    .single()
+
+  const { error } = await supabase.from('product_images').delete().eq('id', imageId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  // If we just deleted the featured image, clear it or set to next available
+  if (image) {
+    const { data: product } = await supabase
+      .from('products')
+      .select('featured_image_url')
+      .eq('id', productId)
+      .single()
+      
+    if (product?.featured_image_url === image.image_url) {
+      // Find another image to feature
+      const { data: nextImage } = await supabase
+        .from('product_images')
+        .select('image_url')
+        .eq('product_id', productId)
+        .order('sort_order', { ascending: true })
+        .limit(1)
+        .single()
+        
+      await supabase
+        .from('products')
+        .update({ featured_image_url: nextImage ? nextImage.image_url : null })
+        .eq('id', productId)
+    }
+  }
+
+  revalidatePath(`/admin/products/${productId}/edit`)
+  return { success: true }
+}
+
+export async function setFeaturedImage(
+  productId: string,
+  imageUrl: string
+): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('products')
+    .update({ featured_image_url: imageUrl })
+    .eq('id', productId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath(`/admin/products/${productId}/edit`)
+  return { success: true }
+}
+
+export async function reorderProductImages(
+  productId: string,
+  orderedIds: string[]
+): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  for (let i = 0; i < orderedIds.length; i++) {
+    await supabase
+      .from('product_images')
+      .update({ sort_order: i })
+      .eq('id', orderedIds[i])
+      .eq('product_id', productId)
+  }
+
+  revalidatePath(`/admin/products/${productId}/edit`)
+  return { success: true }
+}
+
+// ─── Product Variant CRUD ────────────────────────────────
+
+export async function createProductVariant(
+  _prevState: ActionResult,
+  formData: FormData
+): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  const productId = formData.get('product_id') as string
+  const variantName = formData.get('variant_name') as string
+  const price = formData.get('price') as string
+  const originalPrice = formData.get('original_price') as string
+  const stockQuantity = formData.get('stock_quantity') as string
+  const isActive = formData.get('is_active') === 'on'
+
+  if (!productId || !variantName || !price) {
+    return { error: 'Product ID, Variant Name, and Price are required' }
+  }
+
+  const { error } = await supabase.from('product_variants').insert({
+    product_id: productId,
+    variant_name: variantName,
+    price: parseFloat(price),
+    original_price: originalPrice ? parseFloat(originalPrice) : null,
+    stock_quantity: parseInt(stockQuantity || '0', 10),
+    is_active: isActive,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath(`/admin/products/${productId}/edit`)
+  return { success: true }
+}
+
+export async function updateProductVariant(
+  _prevState: ActionResult,
+  formData: FormData
+): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  const id = formData.get('id') as string
+  const productId = formData.get('product_id') as string
+  const variantName = formData.get('variant_name') as string
+  const price = formData.get('price') as string
+  const originalPrice = formData.get('original_price') as string
+  const stockQuantity = formData.get('stock_quantity') as string
+  const isActive = formData.get('is_active') === 'on'
+
+  if (!id || !variantName || !price) {
+    return { error: 'Variant ID, Name, and Price are required' }
+  }
+
+  const { error } = await supabase
+    .from('product_variants')
+    .update({
+      variant_name: variantName,
+      price: parseFloat(price),
+      original_price: originalPrice ? parseFloat(originalPrice) : null,
+      stock_quantity: parseInt(stockQuantity || '0', 10),
+      is_active: isActive,
+    })
+    .eq('id', id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath(`/admin/products/${productId}/edit`)
+  return { success: true }
+}
+
+export async function deleteProductVariant(
+  id: string,
+  productId: string
+): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  const { error } = await supabase.from('product_variants').delete().eq('id', id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath(`/admin/products/${productId}/edit`)
+  return { success: true }
+}
+
 
 export async function saveProductFaqs(
   productId: string,

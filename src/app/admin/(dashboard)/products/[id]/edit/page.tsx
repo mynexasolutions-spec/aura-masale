@@ -4,6 +4,8 @@ import type { Metadata } from 'next'
 import ProductForm from '../../_components/ProductForm'
 import ProductInfoEditor from '../../_components/ProductInfoEditor'
 import ProductFaqEditor from '../../_components/ProductFaqEditor'
+import { ProductVariantsEditor } from '../../_components/ProductVariantsEditor'
+import { ProductImagesEditor } from '../../_components/ProductImagesEditor'
 
 export const metadata: Metadata = {
   title: 'Edit Product',
@@ -17,7 +19,7 @@ export default async function EditProductPage({
   const { id } = await params
   const supabase = await createClient()
 
-  const [productRes, categoriesRes, infoRes, faqRes] = await Promise.all([
+  const [productRes, categoriesRes, infoRes, faqRes, variantsRes, imagesRes] = await Promise.all([
     supabase.from('products').select('*').eq('id', id).single(),
     supabase
       .from('categories')
@@ -34,6 +36,16 @@ export default async function EditProductPage({
       .select('*')
       .eq('product_id', id)
       .order('display_order'),
+    supabase
+      .from('product_variants')
+      .select('*')
+      .eq('product_id', id)
+      .order('created_at'),
+    supabase
+      .from('product_images')
+      .select('*')
+      .eq('product_id', id)
+      .order('sort_order'),
   ])
 
   if (!productRes.data) {
@@ -59,6 +71,20 @@ export default async function EditProductPage({
         productId={id}
         initialItems={infoRes.data || []}
       />
+
+      <div className="bg-white p-6 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+        <ProductVariantsEditor
+          productId={id}
+          variants={variantsRes.data || []}
+        />
+      </div>
+
+      <div className="bg-white p-6 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+        <ProductImagesEditor
+          product={productRes.data}
+          images={imagesRes.data || []}
+        />
+      </div>
 
       <ProductFaqEditor
         productId={id}
