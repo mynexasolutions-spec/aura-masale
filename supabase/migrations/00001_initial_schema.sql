@@ -42,15 +42,19 @@ CREATE POLICY "Enable insert for authenticated users"
   ON public.profiles FOR INSERT
   WITH CHECK (auth.uid() = id);
 
+-- Helper function for admin check
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+$$ LANGUAGE sql SECURITY DEFINER SET search_path = public;
+
 -- Admin can view all profiles
 CREATE POLICY "Admin can view all profiles"
   ON public.profiles FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
 -- =============================================================
 -- 2. ADDRESSES
