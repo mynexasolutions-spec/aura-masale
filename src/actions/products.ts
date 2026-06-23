@@ -39,7 +39,7 @@ export async function createProduct(
 
   const slug = slugify(name)
 
-  const { error } = await supabase.from('products').insert({
+  const { data: product, error } = await supabase.from('products').insert({
     name,
     slug,
     category_id: categoryId || null,
@@ -48,7 +48,7 @@ export async function createProduct(
     seo_title: seoTitle || null,
     seo_description: seoDescription || null,
     is_active: isActive,
-  })
+  }).select('id').single()
 
   if (error) {
     if (error.code === '23505') {
@@ -58,7 +58,7 @@ export async function createProduct(
   }
 
   revalidatePath('/admin/products')
-  redirect('/admin/products')
+  redirect(`/admin/products/${product.id}/edit`)
 }
 
 export async function updateProduct(
