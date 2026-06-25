@@ -55,9 +55,10 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
               name="name"
               type="text"
               required
+              maxLength={255}
               defaultValue={product?.name || ''}
               placeholder="e.g. Turmeric Powder"
-              className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all duration-200"
+              className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200"
             />
             <p className="text-xs text-stone-400 mt-1.5">
               Slug will be auto-generated from the name.
@@ -75,8 +76,9 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             <select
               id="product-category"
               name="category_id"
+              required
               defaultValue={product?.category_id || ''}
-              className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all duration-200"
+              className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200"
             >
               <option value="">Select a category</option>
               {categories.map((cat) => (
@@ -100,9 +102,10 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             id="product-short-desc"
             name="short_description"
             type="text"
+            maxLength={500}
             defaultValue={product?.short_description || ''}
             placeholder="Brief one-liner about the product"
-            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all duration-200"
+            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200"
           />
         </div>
 
@@ -118,9 +121,10 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             id="product-description"
             name="description"
             rows={6}
+            maxLength={5000}
             defaultValue={product?.description || ''}
             placeholder="Detailed product description..."
-            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all duration-200 resize-none"
+            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200 resize-none"
           />
         </div>
 
@@ -131,13 +135,30 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             name="is_active"
             type="checkbox"
             defaultChecked={product?.is_active ?? true}
-            className="w-4 h-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+            className="w-4 h-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500"
           />
           <label
             htmlFor="product-active"
             className="text-sm font-medium text-stone-700"
           >
             Active — visible in the store
+          </label>
+        </div>
+
+        {/* Featured Status */}
+        <div className="flex items-center gap-3">
+          <input
+            id="product-featured"
+            name="is_featured"
+            type="checkbox"
+            defaultChecked={product?.is_featured ?? false}
+            className="w-4 h-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500"
+          />
+          <label
+            htmlFor="product-featured"
+            className="text-sm font-medium text-stone-700"
+          >
+            Featured — highlight on homepage
           </label>
         </div>
       </div>
@@ -157,9 +178,10 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             id="seo-title"
             name="seo_title"
             type="text"
+            maxLength={60}
             defaultValue={product?.seo_title || ''}
             placeholder="Custom title for search engines"
-            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all duration-200"
+            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200"
           />
         </div>
 
@@ -174,9 +196,10 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             id="seo-description"
             name="seo_description"
             rows={2}
+            maxLength={160}
             defaultValue={product?.seo_description || ''}
             placeholder="Meta description for search results"
-            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all duration-200 resize-none"
+            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200 resize-none"
           />
         </div>
       </div>
@@ -193,7 +216,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-semibold rounded-xl shadow-md shadow-amber-500/20 hover:shadow-lg hover:from-amber-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-amber-500/40 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold rounded-xl shadow-md shadow-orange-500/20 hover:shadow-lg hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500/40 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
         >
           {pending ? (
             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -1,5 +1,4 @@
-[project_id]
-id = "aura-masale"
+project_id = "aura-masale"
 
 [api]
 enabled = true

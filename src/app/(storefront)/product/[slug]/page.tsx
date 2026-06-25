@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react'
 import { ProductImageGallery } from '@/components/storefront/ProductImageGallery'
 import { ProductVariantSelector } from '@/components/storefront/ProductVariantSelector'
 import { ProductAccordion } from '@/components/storefront/ProductAccordion'
+import { ProductReviews } from '@/components/storefront/ProductReviews'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -50,9 +51,30 @@ export default async function ProductDetailsPage({
     notFound()
   }
 
+  // Check authentication status
+  const { data: { user } } = await supabase.auth.getUser()
+  const isAuthenticated = !!user
+
+  // Fetch approved reviews
+  const { data: reviewsData } = await supabase
+    .from('reviews')
+    .select('id, rating, review_text, created_at, user:profiles(full_name)')
+    .eq('product_id', product.id)
+    .eq('is_approved', true)
+    .order('created_at', { ascending: false })
+
+  const reviews = reviewsData || []
+
   // Sort relations
   const sortedInfo = (product.product_information || []).sort((a: any, b: any) => a.display_order - b.display_order)
-  const sortedFaqs = (product.product_faqs || []).sort((a: any, b: any) => a.display_order - b.display_order)
+  let sortedFaqs = (product.product_faqs || []).sort((a: any, b: any) => a.display_order - b.display_order)
+
+  if (product.use_global_faqs) {
+    const { data: globalFaqs } = await supabase.from('global_faqs').select('*').order('display_order')
+    if (globalFaqs) {
+      sortedFaqs = globalFaqs
+    }
+  }
 
   return (
     <div className="bg-surface py-8">
@@ -100,21 +122,87 @@ export default async function ProductDetailsPage({
             {/* Variants Selector (Handles Price & Add to Cart) */}
             <ProductVariantSelector variants={product.product_variants || []} />
 
-            {/* Description section (always visible) */}
-            {product.description && (
-              <div className="mt-12">
-                <h3 className="text-lg font-bold text-text mb-4">Description</h3>
-                <div className="prose prose-sm text-text-muted max-w-none whitespace-pre-wrap">
-                  {product.description}
-                </div>
-              </div>
-            )}
-
-            {/* Accordions for additional info and FAQs */}
-            <ProductAccordion info={sortedInfo} faqs={sortedFaqs} />
-
+            {/* FAQs Accordion removed from here */}
           </div>
         </div>
+
+        {/* Description & Additional Info Section */}
+        {(product.description || sortedInfo.length > 0) && (
+          <div className="mt-20 border-t border-border pt-16">
+            <div className="lg:grid lg:grid-cols-2 lg:gap-x-16">
+              
+              {/* Description */}
+              <div className="mb-12 lg:mb-0">
+                <h3 className="text-2xl font-bold text-text mb-6">Description</h3>
+                {product.description ? (
+                  <div className="prose prose-sm text-text-muted max-w-none whitespace-pre-wrap">
+                    {product.description}
+                  </div>
+                ) : (
+                  <p className="text-text-muted italic">No description available.</p>
+                )}
+              </div>
+
+              {/* Additional Information Table */}
+              <div>
+                <h3 className="text-2xl font-bold text-text mb-6">Additional Information</h3>
+                {sortedInfo.length > 0 ? (
+                  <div className="overflow-hidden bg-white border border-border rounded-xl">
+                    <table className="min-w-full divide-y divide-border">
+                      <tbody className="divide-y divide-border">
+                        {sortedInfo.map((info: any, idx: number) => (
+                          <tr key={info.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="py-4 pl-4 pr-3 text-sm font-medium text-text sm:pl-6 w-1/3 border-r border-border">
+                              {info.label}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-text-muted sm:pr-6 whitespace-pre-wrap">
+                              {info.value}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-text-muted italic">No additional information available.</p>
+                )}
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* FAQs & Future Reviews Section */}
+        {(sortedFaqs.length > 0 || true) && (
+          <div className="mt-20 border-t border-border pt-16">
+            <div className="lg:grid lg:grid-cols-2 lg:gap-x-16">
+              
+              {/* FAQs */}
+              <div className="mb-12 lg:mb-0">
+                {sortedFaqs.length > 0 ? (
+                  <>
+                    <h3 className="text-2xl font-bold text-text mb-6">Frequently Asked Questions</h3>
+                    <ProductAccordion faqs={sortedFaqs} />
+                  </>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-text-muted">
+                    {/* No FAQs */}
+                  </div>
+                )}
+              </div>
+
+              {/* Reviews Section */}
+              <div>
+                <ProductReviews 
+                  productId={product.id} 
+                  isAuthenticated={isAuthenticated} 
+                  reviews={reviews as any} 
+                />
+              </div>
+
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

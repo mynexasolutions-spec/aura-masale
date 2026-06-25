@@ -14,10 +14,10 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl shadow-amber-900/5 border border-white/50 p-8">
+    <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl shadow-orange-900/5 border border-white/50 p-8">
       {/* Logo / Brand */}
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl mb-4 shadow-lg shadow-amber-500/25">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl mb-4 shadow-lg shadow-orange-500/25">
           <span className="text-white font-bold text-xl">A</span>
         </div>
         <h1 className="text-2xl font-bold text-stone-900">Welcome Back</h1>
@@ -52,7 +52,7 @@ export default function LoginPage() {
             autoComplete="email"
             required
             placeholder="you@example.com"
-            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all duration-200"
+            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200"
           />
         </div>
 
@@ -71,7 +71,7 @@ export default function LoginPage() {
               autoComplete="current-password"
               required
               placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all duration-200 pr-11"
+              className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200 pr-11"
             />
             <button
               type="button"
@@ -90,7 +90,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={pending}
-          className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold rounded-xl shadow-md shadow-amber-500/25 hover:shadow-lg hover:shadow-amber-500/30 hover:from-amber-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-amber-500/40 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+          className="w-full py-2.5 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl shadow-md shadow-orange-500/25 hover:shadow-lg hover:shadow-orange-500/30 hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500/40 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
         >
           {pending ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -108,7 +108,7 @@ export default function LoginPage() {
         Don&apos;t have an account?{' '}
         <Link
           href="/register"
-          className="text-amber-600 hover:text-amber-700 font-semibold transition-colors"
+          className="text-orange-600 hover:text-orange-700 font-semibold transition-colors"
         >
           Create one
         </Link>

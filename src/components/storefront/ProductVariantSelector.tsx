@@ -1,6 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { ShieldCheck, Truck, Package, MapPin, Check } from 'lucide-react'
+import { addToCart } from '@/actions/cart'
+import { useCart } from '@/contexts/CartContext'
 
 type Variant = {
   id: string
@@ -15,6 +19,10 @@ export function ProductVariantSelector({ variants }: { variants: Variant[] }) {
   const activeVariants = variants.filter(v => v.is_active && v.stock_quantity > 0)
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(activeVariants.length > 0 ? activeVariants[0] : null)
   const [quantity, setQuantity] = useState(1)
+  const [isAdding, setIsAdding] = useState(false)
+  const [addedSuccess, setAddedSuccess] = useState(false)
+  const router = useRouter()
+  const { refreshCart } = useCart()
 
   if (activeVariants.length === 0) {
     return (
@@ -25,6 +33,28 @@ export function ProductVariantSelector({ variants }: { variants: Variant[] }) {
         </button>
       </div>
     )
+  }
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant) return
+    setIsAdding(true)
+    
+    const result = await addToCart(selectedVariant.id, quantity)
+    
+    if (result.requiresLogin) {
+      router.push('/login')
+      return
+    }
+
+    if (result.success) {
+      setAddedSuccess(true)
+      refreshCart()
+      setTimeout(() => setAddedSuccess(false), 2000)
+    } else {
+      alert(result.error || 'Failed to add to cart')
+    }
+    
+    setIsAdding(false)
   }
 
   return (
@@ -77,8 +107,25 @@ export function ProductVariantSelector({ variants }: { variants: Variant[] }) {
           </button>
         </div>
         
-        <button className="flex-1 bg-primary text-white font-bold rounded-full h-12 hover:bg-primary-light hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-          Add to Cart
+        <button 
+          onClick={handleAddToCart}
+          disabled={isAdding || addedSuccess}
+          className={`flex-1 font-bold rounded-full h-12 transition-all duration-300 inline-flex items-center justify-center gap-2 ${
+            addedSuccess
+              ? 'bg-green-500 text-white'
+              : 'bg-primary text-white hover:bg-primary-light hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-70'
+          }`}
+        >
+          {isAdding ? (
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : addedSuccess ? (
+            <>
+              <Check className="w-5 h-5" />
+              Added to Cart!
+            </>
+          ) : (
+            'Add to Cart'
+          )}
         </button>
       </div>
       
@@ -87,6 +134,34 @@ export function ProductVariantSelector({ variants }: { variants: Variant[] }) {
           <span className="text-orange-600">Only {selectedVariant.stock_quantity} left in stock!</span>
         )}
       </p>
+
+      {/* Trust Badges */}
+      <div className="mt-8 pt-6 border-t border-border grid grid-cols-2 gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <span className="text-sm font-medium text-text">Secure payments via Razorpay</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Truck className="h-5 w-5" />
+          </div>
+          <span className="text-sm font-medium text-text">Rs. 90 shipping charges</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Package className="h-5 w-5" />
+          </div>
+          <span className="text-sm font-medium text-text">Free delivery above Rs. 500</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <MapPin className="h-5 w-5" />
+          </div>
+          <span className="text-sm font-medium text-text">All India delivery</span>
+        </div>
+      </div>
     </div>
   )
 }

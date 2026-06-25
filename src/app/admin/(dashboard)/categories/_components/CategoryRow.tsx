@@ -57,7 +57,7 @@ export default function CategoryRow({ category }: { category: Category }) {
         <div className="flex items-center justify-end gap-1">
           <Link
             href={`/admin/categories/${category.id}/edit`}
-            className="p-2 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
+            className="p-2 rounded-lg text-stone-400 hover:text-orange-600 hover:bg-orange-50 transition-colors"
           >
             <Pencil className="w-4 h-4" />
           </Link>

@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Trash2, Save } from 'lucide-react'
 import { saveProductFaqs } from '@/actions/products'
+import { toggleUseGlobalFaqs } from '@/actions/toggle_global_faqs'
 
 interface FaqItem {
   id?: string
@@ -14,10 +15,13 @@ interface FaqItem {
 export default function ProductFaqEditor({
   productId,
   initialItems,
+  initialUseGlobal,
 }: {
   productId: string
   initialItems: FaqItem[]
+  initialUseGlobal: boolean
 }) {
+  const [useGlobal, setUseGlobal] = useState(initialUseGlobal)
   const [items, setItems] = useState<FaqItem[]>(
     initialItems.length > 0
       ? initialItems
@@ -77,15 +81,42 @@ export default function ProductFaqEditor({
             Product-specific Q&A displayed on the product detail page
           </p>
         </div>
-        <button
-          type="button"
-          onClick={addItem}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          Add FAQ
-        </button>
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-stone-700">Use Global FAQs</label>
+          <button
+            type="button"
+            onClick={async () => {
+              const newVal = !useGlobal;
+              setUseGlobal(newVal);
+              startTransition(async () => {
+                await toggleUseGlobalFaqs(productId, newVal);
+              });
+            }}
+            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2 ${
+              useGlobal ? 'bg-orange-600' : 'bg-gray-200'
+            }`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                useGlobal ? 'translate-x-5' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
       </div>
+
+      {!useGlobal && (
+        <>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={addItem}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Add FAQ
+            </button>
+          </div>
 
       {message && (
         <div
@@ -119,17 +150,19 @@ export default function ProductFaqEditor({
             </div>
             <input
               type="text"
+              maxLength={500}
               value={item.question}
               onChange={(e) => updateItem(index, 'question', e.target.value)}
               placeholder="Question"
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all bg-white"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all bg-white"
             />
             <textarea
               value={item.answer}
+              maxLength={2000}
               onChange={(e) => updateItem(index, 'answer', e.target.value)}
               placeholder="Answer"
               rows={2}
-              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all resize-none bg-white"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all resize-none bg-white"
             />
           </div>
         ))}
@@ -148,6 +181,8 @@ export default function ProductFaqEditor({
         )}
         Save FAQs
       </button>
+        </>
+      )}
     </div>
   )
 }

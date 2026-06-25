@@ -89,6 +89,7 @@ export default async function EditProductPage({
       <ProductFaqEditor
         productId={id}
         initialItems={faqRes.data || []}
+        initialUseGlobal={productRes.data.use_global_faqs}
       />
     </div>
   )

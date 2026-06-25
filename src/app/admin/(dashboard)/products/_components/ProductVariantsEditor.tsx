@@ -112,6 +112,7 @@ export function ProductVariantsEditor({
               <input
                 required
                 type="text"
+                maxLength={100}
                 value={formData.variant_name}
                 onChange={(e) => setFormData({ ...formData, variant_name: e.target.value })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -123,6 +124,8 @@ export function ProductVariantsEditor({
                 required
                 type="number"
                 step="0.01"
+                min="0"
+                max="300000"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -133,6 +136,8 @@ export function ProductVariantsEditor({
               <input
                 type="number"
                 step="0.01"
+                min="0"
+                max="300000"
                 value={formData.original_price}
                 onChange={(e) => setFormData({ ...formData, original_price: e.target.value })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -144,6 +149,8 @@ export function ProductVariantsEditor({
               <input
                 required
                 type="number"
+                min="0"
+                max="1000"
                 value={formData.stock_quantity}
                 onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"

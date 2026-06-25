@@ -11,8 +11,10 @@ import {
   MessageSquare,
   Image,
   Megaphone,
+  Settings,
   ChevronLeft,
   ChevronRight,
+  Star,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -22,9 +24,11 @@ const navItems = [
   { label: 'Products', href: '/admin/products', icon: Package },
   { label: 'Orders', href: '/admin/orders', icon: ShoppingCart },
   { label: 'Customers', href: '/admin/customers', icon: Users },
+  { label: 'Reviews', href: '/admin/reviews', icon: Star },
   { label: 'Inquiries', href: '/admin/inquiries', icon: MessageSquare },
   { label: 'Hero Slides', href: '/admin/hero-slides', icon: Image },
   { label: 'Announcements', href: '/admin/announcements', icon: Megaphone },
+  { label: 'Global FAQs', href: '/admin/settings/faqs', icon: Settings },
 ]
 
 export default function AdminSidebar() {
@@ -39,7 +43,7 @@ export default function AdminSidebar() {
     >
       {/* Brand */}
       <div className="h-16 flex items-center px-4 border-b border-stone-800/50 gap-3">
-        <div className="w-9 h-9 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/20">
+        <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-orange-500/20">
           <span className="text-white font-bold text-sm">A</span>
         </div>
         {!collapsed && (
@@ -68,14 +72,14 @@ export default function AdminSidebar() {
               title={collapsed ? item.label : undefined}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
                 isActive
-                  ? 'bg-amber-500/15 text-amber-400'
+                  ? 'bg-orange-500/15 text-orange-400'
                   : 'text-stone-400 hover:text-white hover:bg-stone-800/60'
               }`}
             >
               <Icon
                 className={`w-5 h-5 shrink-0 ${
                   isActive
-                    ? 'text-amber-400'
+                    ? 'text-orange-400'
                     : 'text-stone-500 group-hover:text-stone-300'
                 }`}
               />

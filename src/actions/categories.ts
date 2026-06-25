@@ -27,6 +27,7 @@ export async function createCategory(
 
   const name = formData.get('name') as string
   const description = formData.get('description') as string
+  const imageUrl = formData.get('image_url') as string
   const isActive = formData.get('is_active') === 'on'
 
   if (!name) {
@@ -39,6 +40,7 @@ export async function createCategory(
     name,
     slug,
     description: description || null,
+    image_url: imageUrl || null,
     is_active: isActive,
   })
 
@@ -62,6 +64,7 @@ export async function updateCategory(
   const id = formData.get('id') as string
   const name = formData.get('name') as string
   const description = formData.get('description') as string
+  const imageUrl = formData.get('image_url') as string
   const isActive = formData.get('is_active') === 'on'
 
   if (!id || !name) {
@@ -76,6 +79,7 @@ export async function updateCategory(
       name,
       slug,
       description: description || null,
+      image_url: imageUrl || null,
       is_active: isActive,
     })
     .eq('id', id)

@@ -65,8 +65,8 @@ export default async function AdminDashboardPage() {
       label: 'Total Revenue',
       value: `₹${totalRevenue.toLocaleString('en-IN')}`,
       icon: IndianRupee,
-      gradient: 'from-amber-500 to-orange-500',
-      shadowColor: 'shadow-amber-500/20',
+      gradient: 'from-orange-500 to-orange-500',
+      shadowColor: 'shadow-orange-500/20',
     },
     {
       label: 'Total Orders',

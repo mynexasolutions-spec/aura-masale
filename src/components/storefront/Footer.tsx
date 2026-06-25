@@ -12,11 +12,11 @@ export function Footer() {
             <Link href="/" className="inline-block">
               <span className="sr-only">Aura Masale</span>
               <Image
-                src="/logo.svg"
+                src="/logo.webp"
                 alt="Aura Masale Logo"
-                width={120}
-                height={40}
-                className="h-10 w-auto brightness-0 invert" 
+                width={240}
+                height={80}
+                className="h-16 w-auto" 
               />
             </Link>
             <p className="mt-4 text-sm leading-6 text-gray-300">
@@ -67,13 +67,13 @@ export function Footer() {
             <h3 className="text-sm font-semibold leading-6 text-primary-light uppercase tracking-wider">Get in Touch</h3>
             <ul role="list" className="mt-6 space-y-4">
               <li className="text-sm leading-6 text-gray-300">
-                123 Spice Market, New Delhi, India 110006
+                T891 A/1 Aulia Masjid<br />Ward No 8 Mehrauli<br />New Delhi 110030
               </li>
               <li className="text-sm leading-6 text-gray-300">
-                Email: hello@auramasale.com
+                Email: info@auramasale.com
               </li>
               <li className="text-sm leading-6 text-gray-300">
-                Phone: +91 98765 43210
+                Phone/WhatsApp: +91 9540048786
               </li>
             </ul>
           </div>

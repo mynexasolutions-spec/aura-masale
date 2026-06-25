@@ -81,7 +81,7 @@ export default function ProductInfoEditor({
         <button
           type="button"
           onClick={addItem}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
           Add Row
@@ -106,17 +106,19 @@ export default function ProductInfoEditor({
             <GripVertical className="w-4 h-4 text-stone-300 shrink-0" />
             <input
               type="text"
+              maxLength={100}
               value={item.label}
               onChange={(e) => updateItem(index, 'label', e.target.value)}
               placeholder="Label (e.g. Brand)"
-              className="flex-1 px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all"
+              className="flex-1 px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
             />
             <input
               type="text"
+              maxLength={1000}
               value={item.value}
               onChange={(e) => updateItem(index, 'value', e.target.value)}
               placeholder="Value (e.g. Aura Masale)"
-              className="flex-1 px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all"
+              className="flex-1 px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
             />
             <button
               type="button"

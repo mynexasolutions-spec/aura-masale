@@ -1,0 +1,6 @@
+-- Add timestamp tracking columns for different order statuses
+ALTER TABLE public.orders
+ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP WITH TIME ZONE,
+ADD COLUMN IF NOT EXISTS shipped_at TIMESTAMP WITH TIME ZONE,
+ADD COLUMN IF NOT EXISTS delivered_at TIMESTAMP WITH TIME ZONE,
+ADD COLUMN IF NOT EXISTS cancelled_at TIMESTAMP WITH TIME ZONE;

@@ -32,6 +32,7 @@ export async function createProduct(
   const seoTitle = formData.get('seo_title') as string
   const seoDescription = formData.get('seo_description') as string
   const isActive = formData.get('is_active') === 'on'
+  const isFeatured = formData.get('is_featured') === 'on'
 
   if (!name) {
     return { error: 'Product name is required' }
@@ -48,6 +49,7 @@ export async function createProduct(
     seo_title: seoTitle || null,
     seo_description: seoDescription || null,
     is_active: isActive,
+    is_featured: isFeatured,
   }).select('id').single()
 
   if (error) {
@@ -75,6 +77,7 @@ export async function updateProduct(
   const seoTitle = formData.get('seo_title') as string
   const seoDescription = formData.get('seo_description') as string
   const isActive = formData.get('is_active') === 'on'
+  const isFeatured = formData.get('is_featured') === 'on'
 
   if (!id || !name) {
     return { error: 'Product ID and name are required' }
@@ -93,6 +96,7 @@ export async function updateProduct(
       seo_title: seoTitle || null,
       seo_description: seoDescription || null,
       is_active: isActive,
+      is_featured: isFeatured,
     })
     .eq('id', id)
 

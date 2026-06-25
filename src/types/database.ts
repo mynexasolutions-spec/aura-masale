@@ -42,6 +42,7 @@ export interface Category {
   name: string
   slug: string
   description: string | null
+  image_url: string | null
   is_active: boolean
   created_at: string
   updated_at: string
@@ -59,6 +60,7 @@ export interface Product {
   average_rating: number
   review_count: number
   is_active: boolean
+  is_featured: boolean
   seo_title: string | null
   seo_description: string | null
   created_at: string
