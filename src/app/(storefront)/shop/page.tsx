@@ -76,9 +76,15 @@ export default async function ShopPage({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-3xl font-bold text-text mb-4">Shop All Spices</h1>
-          <p className="text-text-muted">Discover our complete collection of whole and ground spices.</p>
+        <div className="mb-12 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-50"></div>
+          <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-32 h-32 bg-amber-100 rounded-full blur-3xl opacity-50"></div>
+          <h1 className="text-4xl font-bold text-stone-900 mb-4 relative z-10">
+            {categoryFilter ? categories?.find(c => c.slug === categoryFilter)?.name : 'Shop All Spices'}
+          </h1>
+          <p className="text-stone-500 text-lg max-w-2xl relative z-10">
+            Discover our complete collection of whole and ground spices, handpicked and freshly packed.
+          </p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12">
@@ -92,23 +98,23 @@ export default async function ShopPage({
                 name="q"
                 defaultValue={searchQuery || ''}
                 placeholder="Search spices..."
-                className="w-full rounded-md border-0 py-2.5 pl-4 pr-10 text-text shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm"
+                className="w-full rounded-2xl border border-stone-200 bg-white py-3 pl-4 pr-12 text-stone-900 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all placeholder:text-stone-400 shadow-sm"
               />
               {categoryFilter && <input type="hidden" name="category" value={categoryFilter} />}
-              <button type="submit" className="absolute right-2 top-2.5 text-gray-400 hover:text-primary">
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-orange-600 transition-colors p-2">
                 <Search className="h-5 w-5" />
               </button>
             </form>
 
             {/* Categories */}
-            <div>
-              <h3 className="text-lg font-bold text-text mb-4">Categories</h3>
-              <ul className="space-y-2">
+            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
+              <h3 className="text-lg font-bold text-stone-900 mb-4">Categories</h3>
+              <ul className="space-y-1.5">
                 <li>
                   <Link
                     href={`/shop${searchQuery ? `?q=${searchQuery}` : ''}`}
-                    className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      !categoryFilter ? 'bg-primary/10 text-primary' : 'text-text-muted hover:bg-gray-100 hover:text-text'
+                    className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                      !categoryFilter ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
                     }`}
                   >
                     All Products
@@ -118,8 +124,8 @@ export default async function ShopPage({
                   <li key={cat.id}>
                     <Link
                       href={`/shop?category=${cat.slug}${searchQuery ? `&q=${searchQuery}` : ''}`}
-                      className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                        categoryFilter === cat.slug ? 'bg-primary/10 text-primary' : 'text-text-muted hover:bg-gray-100 hover:text-text'
+                      className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                        categoryFilter === cat.slug ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
                       }`}
                     >
                       {cat.name}

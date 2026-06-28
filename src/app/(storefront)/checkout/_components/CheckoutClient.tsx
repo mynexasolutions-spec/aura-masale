@@ -6,8 +6,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { MapPin, Plus, ShieldCheck, CheckCircle, CreditCard } from 'lucide-react'
 import { createOrder, verifyRazorpayPayment } from '@/actions/checkout'
+import { sendOtp, verifyOtp } from '@/actions/auth'
 import { useCart } from '@/contexts/CartContext'
 import Script from 'next/script'
+import { useTransition } from 'react'
 
 type Address = {
   id: string
@@ -22,16 +24,53 @@ type Address = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function CheckoutClient({ initialItems, addresses }: { initialItems: any[], addresses: Address[] }) {
+export function CheckoutClient({ initialItems, addresses, isAuthenticated = true }: { initialItems: any[], addresses: Address[], isAuthenticated?: boolean }) {
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     addresses.find(a => a.is_default)?.id || (addresses.length > 0 ? addresses[0].id : null)
   )
   const [paymentMethod, setPaymentMethod] = useState<'COD' | 'RAZORPAY'>('COD')
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // OTP State
+  const [otpStep, setOtpStep] = useState<'email' | 'otp'>('email')
+  const [email, setEmail] = useState('')
+  const [otp, setOtp] = useState('')
+  const [authError, setAuthError] = useState('')
+  const [isAuthPending, startAuthTransition] = useTransition()
   
   const router = useRouter()
   const { refreshCart } = useCart()
+
+  const handleSendOtp = (e: React.FormEvent) => {
+    e.preventDefault()
+    setAuthError('')
+    startAuthTransition(async () => {
+      const formData = new FormData()
+      formData.append('email', email)
+      const res = await sendOtp({}, formData)
+      if (res.error) {
+        setAuthError(res.error)
+      } else {
+        setOtpStep('otp')
+      }
+    })
+  }
+
+  const handleVerifyOtp = (e: React.FormEvent) => {
+    e.preventDefault()
+    setAuthError('')
+    startAuthTransition(async () => {
+      const formData = new FormData()
+      formData.append('email', email)
+      formData.append('token', otp)
+      formData.append('redirectTo', '/checkout')
+      const res = await verifyOtp({}, formData)
+      if (res.error) {
+        setAuthError(res.error)
+      }
+    })
+  }
 
   const subtotal = initialItems.reduce((sum, item) => {
     return sum + (item.product_variants.price * item.quantity)
@@ -115,14 +154,86 @@ export function CheckoutClient({ initialItems, addresses }: { initialItems: any[
       {/* Main Checkout Area */}
       <section className="lg:col-span-7 space-y-10">
         
-        {/* Addresses */}
-        <div className="bg-white rounded-2xl border border-border p-6 lg:p-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-text flex items-center gap-2">
+        {!isAuthenticated ? (
+          <div className="bg-white rounded-2xl border border-border p-6 lg:p-8">
+            <h2 className="text-xl font-bold text-text mb-6 flex items-center gap-2">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white text-sm">1</span>
-              Shipping Address
+              Contact Information
             </h2>
+            
+            {authError && (
+              <div className="mb-6 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                {authError}
+              </div>
+            )}
+
+            {otpStep === 'email' ? (
+              <form onSubmit={handleSendOtp} className="space-y-4">
+                <div>
+                  <label htmlFor="checkout-email" className="block text-sm font-medium text-stone-700 mb-1.5">
+                    Email Address
+                  </label>
+                  <input
+                    id="checkout-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  />
+                  <p className="text-xs text-text-muted mt-2">
+                    We will send a one-time code to verify your order.
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isAuthPending}
+                  className="px-6 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-light transition-colors disabled:opacity-60"
+                >
+                  {isAuthPending ? 'Sending...' : 'Continue'}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div>
+                  <label htmlFor="checkout-otp" className="block text-sm font-medium text-stone-700 mb-1.5">
+                    6-Digit Code
+                  </label>
+                  <input
+                    id="checkout-otp"
+                    type="text"
+                    required
+                    maxLength={6}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="123456"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary tracking-widest text-lg"
+                  />
+                  <p className="text-xs text-text-muted mt-2">
+                    Code sent to {email}. <button type="button" onClick={() => setOtpStep('email')} className="text-primary hover:underline">Edit</button>
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isAuthPending || otp.length < 6}
+                  className="px-6 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-light transition-colors disabled:opacity-60"
+                >
+                  {isAuthPending ? 'Verifying...' : 'Verify & Continue'}
+                </button>
+              </form>
+            )}
           </div>
+        ) : (
+          <>
+            {/* Addresses */}
+            <div className="bg-white rounded-2xl border border-border p-6 lg:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-text flex items-center gap-2">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white text-sm">1</span>
+                  Shipping Address
+                </h2>
+              </div>
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 text-red-800 text-sm font-medium rounded-lg">
@@ -259,13 +370,15 @@ export function CheckoutClient({ initialItems, addresses }: { initialItems: any[
             </label>
           </div>
           
-          <div className="mt-4 p-4 border border-border bg-surface-dark rounded-xl flex items-start gap-3">
-             <ShieldCheck className="w-5 h-5 text-text-muted shrink-0 mt-0.5" />
-             <p className="text-xs text-text-muted leading-relaxed">
-               All transactions are encrypted and secured. Your payment information is not stored on our servers.
-             </p>
+            <div className="mt-4 p-4 border border-border bg-surface-dark rounded-xl flex items-start gap-3">
+               <ShieldCheck className="w-5 h-5 text-text-muted shrink-0 mt-0.5" />
+               <p className="text-xs text-text-muted leading-relaxed">
+                 All transactions are encrypted and secured. Your payment information is not stored on our servers.
+               </p>
+            </div>
           </div>
-        </div>
+          </>
+        )}
 
       </section>
 
@@ -325,11 +438,13 @@ export function CheckoutClient({ initialItems, addresses }: { initialItems: any[
 
           <button 
             onClick={handlePlaceOrder}
-            disabled={isPlacingOrder || addresses.length === 0}
+            disabled={!isAuthenticated || isPlacingOrder || addresses.length === 0}
             className="mt-8 w-full inline-flex items-center justify-center py-4 bg-primary text-white font-bold rounded-full hover:bg-primary-light hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none"
           >
             {isPlacingOrder ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : !isAuthenticated ? (
+              'Verify Email to Place Order'
             ) : (
               `Place Order • ₹${total.toFixed(2)}`
             )}

@@ -43,7 +43,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         <div className="flex h-20 items-center justify-between">
           
           {/* Mobile Left: Hamburger */}
-          <div className="flex items-center lg:hidden">
+          <div className="flex flex-1 items-center lg:hidden">
             <button
               type="button"
               className="-ml-2 p-2 text-stone-800 hover:text-orange-600 transition-colors"
@@ -73,7 +73,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
 
           {/* Mobile Center: Logo */}
-          <div className="flex flex-1 justify-center lg:hidden">
+          <div className="flex justify-center lg:hidden">
             <Link href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Aura Masale</span>
               <Image
@@ -81,7 +81,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 alt="Aura Masale Logo"
                 width={200}
                 height={64}
-                className="h-12 w-auto"
+                className="h-14 w-auto object-contain"
                 priority
               />
             </Link>
@@ -101,7 +101,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
 
           {/* Right: Search, Cart & Account */}
-          <div className="flex flex-1 items-center justify-end gap-x-4 sm:gap-x-6">
+          <div className="flex flex-1 items-center justify-end gap-x-4 sm:gap-x-6 lg:ml-10">
             
             {/* Desktop Inline Search */}
             <form onSubmit={handleSearchSubmit} className="hidden lg:flex relative w-full max-w-xs xl:max-w-md mr-4">
@@ -136,12 +136,9 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                   <span className="text-sm font-medium">Account</span>
                 </Link>
               ) : (
-                <div className="flex items-center gap-3">
-                  <Link href="/login" className="text-sm font-semibold text-stone-800 hover:text-orange-600 transition-colors">
-                    Login
-                  </Link>
-                  <Link href="/register" className="text-sm font-semibold text-white bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-full transition-colors shadow-sm shadow-orange-600/20">
-                    Sign up
+                <div className="flex items-center gap-4">
+                  <Link href="/login" className="text-sm font-semibold text-white bg-orange-600 hover:bg-orange-500 px-5 py-2 rounded-md transition-colors shadow-sm shadow-orange-600/20 whitespace-nowrap">
+                    Login / Sign up
                   </Link>
                 </div>
               )}
@@ -238,16 +235,9 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                       <Link
                         href="/login"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-stone-800 hover:bg-stone-50 hover:text-orange-600 transition-colors border border-stone-200"
-                      >
-                        Login
-                      </Link>
-                      <Link
-                        href="/register"
-                        onClick={() => setMobileMenuOpen(false)}
                         className="block w-full text-center rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white bg-orange-600 hover:bg-orange-500 transition-colors shadow-sm shadow-orange-600/20"
                       >
-                        Sign up
+                        Login / Sign up
                       </Link>
                     </div>
                   )}

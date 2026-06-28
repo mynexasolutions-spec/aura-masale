@@ -11,23 +11,23 @@ export default async function CheckoutPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/login?next=/checkout')
-  }
-
-  // Get Cart
+  // Get Cart (handles both authenticated and guest carts)
   const { items } = await getCart()
   if (!items || items.length === 0) {
     redirect('/cart')
   }
 
-  // Get Addresses
-  const { data: addresses } = await supabase
-    .from('addresses')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('is_default', { ascending: false })
-    .order('created_at', { ascending: false })
+  // Get Addresses if authenticated
+  let addresses = []
+  if (user) {
+    const { data } = await supabase
+      .from('addresses')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('is_default', { ascending: false })
+      .order('created_at', { ascending: false })
+    if (data) addresses = data
+  }
 
   return (
     <div className="bg-surface py-12 min-h-screen">
@@ -37,7 +37,8 @@ export default async function CheckoutPage() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           initialItems={items as any[]} 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          addresses={addresses as any[] || []} 
+          addresses={addresses as any[]} 
+          isAuthenticated={!!user}
         />
       </div>
     </div>
