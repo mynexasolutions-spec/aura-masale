@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { ProductCard } from '@/components/storefront/ProductCard'
 import Link from 'next/link'
-import { Search } from 'lucide-react'
+import { ShopSidebar } from './_components/ShopSidebar'
 
 export const metadata = {
   title: 'Shop | Aura Masale',
@@ -16,6 +16,11 @@ export default async function ShopPage({
   const params = await searchParams
   const categoryFilter = typeof params.category === 'string' ? params.category : null
   const searchQuery = typeof params.q === 'string' ? params.q : null
+  const pageStr = typeof params.page === 'string' ? params.page : '1'
+  const page = parseInt(pageStr, 10) || 1
+  const limit = 18
+  const from = (page - 1) * limit
+  const to = from + limit - 1
 
   const supabase = await createClient()
 
@@ -40,7 +45,7 @@ export default async function ShopPage({
         price,
         is_active
       )
-    `)
+    `, { count: 'exact' })
     .eq('is_active', true)
 
   if (categoryFilter) {
@@ -53,7 +58,10 @@ export default async function ShopPage({
     query = query.ilike('name', `%${searchQuery}%`)
   }
 
-  const { data: products, error } = await query
+  query = query.range(from, to)
+
+  const { data: products, error, count } = await query
+  const totalPages = Math.ceil((count || 0) / limit)
 
   // Process products to find minimum variant price
   const formattedProducts = (products || []).map((product: any) => {
@@ -72,69 +80,30 @@ export default async function ShopPage({
   })
 
   return (
-    <div className="bg-surface py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-surface min-h-screen pb-12">
+      
+      {/* Header */}
+      <div 
+        className="relative overflow-hidden mb-12 bg-stone-900 bg-cover bg-center" 
+        style={{ backgroundImage: "url('/shop-background.webp')" }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
         
-        {/* Header */}
-        <div className="mb-12 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-50"></div>
-          <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-32 h-32 bg-amber-100 rounded-full blur-3xl opacity-50"></div>
-          <h1 className="text-4xl font-bold text-stone-900 mb-4 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 relative z-10 flex flex-col items-center text-center">
+          <h1 className="text-4xl lg:text-5xl font-extrabold text-white mb-4 tracking-tight drop-shadow-sm">
             {categoryFilter ? categories?.find(c => c.slug === categoryFilter)?.name : 'Shop All Spices'}
           </h1>
-          <p className="text-stone-500 text-lg max-w-2xl relative z-10">
+          <p className="text-stone-200 text-lg max-w-2xl leading-relaxed drop-shadow-sm">
             Discover our complete collection of whole and ground spices, handpicked and freshly packed.
           </p>
         </div>
+      </div>
 
-        <div className="flex flex-col lg:flex-row gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-12 items-start">
           
           {/* Sidebar / Filters */}
-          <div className="w-full lg:w-64 flex-shrink-0">
-            {/* Search Box */}
-            <form action="/shop" className="mb-8 relative">
-              <input
-                type="text"
-                name="q"
-                defaultValue={searchQuery || ''}
-                placeholder="Search spices..."
-                className="w-full rounded-2xl border border-stone-200 bg-white py-3 pl-4 pr-12 text-stone-900 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all placeholder:text-stone-400 shadow-sm"
-              />
-              {categoryFilter && <input type="hidden" name="category" value={categoryFilter} />}
-              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-orange-600 transition-colors p-2">
-                <Search className="h-5 w-5" />
-              </button>
-            </form>
-
-            {/* Categories */}
-            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
-              <h3 className="text-lg font-bold text-stone-900 mb-4">Categories</h3>
-              <ul className="space-y-1.5">
-                <li>
-                  <Link
-                    href={`/shop${searchQuery ? `?q=${searchQuery}` : ''}`}
-                    className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      !categoryFilter ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
-                    }`}
-                  >
-                    All Products
-                  </Link>
-                </li>
-                {categories?.map((cat) => (
-                  <li key={cat.id}>
-                    <Link
-                      href={`/shop?category=${cat.slug}${searchQuery ? `&q=${searchQuery}` : ''}`}
-                      className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                        categoryFilter === cat.slug ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
-                      }`}
-                    >
-                      {cat.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <ShopSidebar categories={categories || []} categoryFilter={categoryFilter} searchQuery={searchQuery} />
 
           {/* Product Grid */}
           <div className="flex-1">
@@ -149,11 +118,47 @@ export default async function ShopPage({
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {formattedProducts.map((product) => (
-                  <ProductCard key={product.id} {...product} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {formattedProducts.map((product) => (
+                    <ProductCard key={product.id} {...product} />
+                  ))}
+                </div>
+
+                {totalPages > 1 && (
+                  <div className="mt-12 flex justify-center items-center gap-2">
+                    {page > 1 && (
+                      <Link
+                        href={`/shop?page=${page - 1}${categoryFilter ? `&category=${categoryFilter}` : ''}${searchQuery ? `&q=${searchQuery}` : ''}`}
+                        className="px-4 py-2 bg-white border border-stone-200 rounded-xl text-stone-600 hover:bg-stone-50 transition-colors font-medium text-sm"
+                      >
+                        Previous
+                      </Link>
+                    )}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                      <Link
+                        key={p}
+                        href={`/shop?page=${p}${categoryFilter ? `&category=${categoryFilter}` : ''}${searchQuery ? `&q=${searchQuery}` : ''}`}
+                        className={`w-10 h-10 flex items-center justify-center rounded-xl border text-sm font-medium transition-colors ${
+                          p === page 
+                            ? 'bg-orange-600 border-orange-600 text-white shadow-sm shadow-orange-600/20' 
+                            : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-50'
+                        }`}
+                      >
+                        {p}
+                      </Link>
+                    ))}
+                    {page < totalPages && (
+                      <Link
+                        href={`/shop?page=${page + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}${searchQuery ? `&q=${searchQuery}` : ''}`}
+                        className="px-4 py-2 bg-white border border-stone-200 rounded-xl text-stone-600 hover:bg-stone-50 transition-colors font-medium text-sm"
+                      >
+                        Next
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </div>
 
