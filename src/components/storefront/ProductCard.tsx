@@ -19,7 +19,7 @@ export function ProductCard({
   minPrice,
 }: ProductCardProps) {
   return (
-    <Link href={`/product/${slug}`} className="group relative flex flex-col bg-white rounded-xl shadow-sm border border-border overflow-hidden hover:shadow-md hover:border-primary/30 transition-all duration-300">
+    <Link href={`/product/${slug}`} className="group relative flex flex-col bg-white rounded-md shadow-sm border border-[#E8B96A] overflow-hidden hover:shadow-md hover:border-orange-500/50 transition-all duration-300">
       
       {/* Image Container */}
       <div className="relative aspect-square bg-gray-100 overflow-hidden">

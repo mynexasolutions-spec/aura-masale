@@ -64,11 +64,6 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
     
     const result = await addToCart(targetVariant.id, 1)
     
-    if (result.requiresLogin) {
-      router.push('/login')
-      return
-    }
-
     if (result.success) {
       setAddedSuccess(product.id)
       refreshCart()
@@ -85,7 +80,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
   }
 
   return (
-    <section className="py-20 bg-stone-50 relative overflow-hidden">
+    <section className="py-20 bg-[#E8B96A] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-10 gap-4">
           <div>
@@ -124,8 +119,6 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
         {/* Carousel Container */}
         <div className="relative -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
-          <div className="absolute inset-y-0 left-0 w-8 sm:w-12 lg:w-24 bg-gradient-to-r from-stone-50 to-transparent z-10 pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-8 sm:w-12 lg:w-24 bg-gradient-to-l from-stone-50 to-transparent z-10 pointer-events-none" />
           
           <div 
             ref={scrollRef}
@@ -143,7 +136,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 <Link 
                   key={product.id} 
                   href={`/product/${product.slug}`}
-                  className="group w-[75vw] sm:w-[280px] lg:w-[300px] shrink-0 snap-center sm:snap-start bg-white border border-stone-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
+                  className="group w-[75vw] sm:w-[280px] lg:w-[300px] shrink-0 snap-center sm:snap-start bg-white border border-[#E8B96A] rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
                 >
                   <div className="relative aspect-square w-full bg-stone-100 overflow-hidden">
                     {product.featured_image_url ? (
@@ -160,7 +153,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                     )}
                     
                     {hasDiscount && (
-                      <div className="absolute top-4 left-4 bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                      <div className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded shadow-md">
                         SALE
                       </div>
                     )}

@@ -85,7 +85,7 @@ export default async function HomePage() {
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link
                 href="/shop"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white font-semibold rounded-full shadow-lg shadow-primary/25 hover:shadow-xl hover:bg-primary-light hover:-translate-y-0.5 transition-all duration-300"
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white font-semibold rounded-md shadow-lg shadow-primary/25 hover:shadow-xl hover:bg-primary-light hover:-translate-y-0.5 transition-all duration-300"
               >
                 Shop Collection
                 <ArrowRight className="w-5 h-5" />
@@ -99,13 +99,13 @@ export default async function HomePage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-text mb-4">Shop by Category</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">Shop by Category</h2>
             <p className="text-text-muted max-w-2xl mx-auto">Explore our range of authentic spices sourced directly from the best farms.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {categories.length > 0 ? categories.map((category) => (
-              <Link key={category.id} href={`/shop?category=${category.slug}`} className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-100 flex items-center justify-center border border-stone-200">
+              <Link key={category.id} href={`/shop?category=${category.slug}`} className="group relative rounded-md overflow-hidden aspect-[4/3] bg-stone-100 flex items-center justify-center border border-stone-200">
                 {category.image_url ? (
                   <>
                     <Image 
@@ -185,33 +185,29 @@ export default async function HomePage() {
       </section>
 
       {/* Our Story / Philosophy */}
-      <section className="py-24 bg-white relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-stone-900 rounded-3xl overflow-hidden shadow-2xl relative">
-            <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
-            <div className="relative z-10 px-6 py-16 sm:px-12 sm:py-20 lg:py-24 lg:px-16 flex flex-col lg:flex-row items-center gap-12">
-              <div className="lg:w-1/2">
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">Authentic heritage in every pinch.</h2>
-                <p className="text-stone-300 text-lg mb-8 leading-relaxed">
-                  Aura Masale was born out of a passion for traditional Indian cooking. We noticed that modern kitchens were losing the authentic aromas that defined our childhoods. Our mission is to bring back those authentic, rich flavors of traditional Indian spices.
-                </p>
-                <Link
-                  href="/about"
-                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-orange-500 text-stone-950 font-semibold rounded-full hover:bg-orange-400 transition-all duration-300"
-                >
-                  Read Our Story
-                </Link>
-              </div>
-              <div className="lg:w-1/2 flex justify-center">
-                <div className="relative w-72 h-72 rounded-full overflow-hidden border-8 border-stone-800 shadow-2xl">
-                  <Image 
-                    src="/logo.webp" 
-                    alt="Aura Masale" 
-                    fill 
-                    className="object-contain bg-white p-8"
-                  />
-                </div>
-              </div>
+      <section className="py-24 bg-stone-900 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-12">
+          <div className="lg:w-1/2">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">Authentic heritage in every pinch.</h2>
+            <p className="text-stone-300 text-lg mb-8 leading-relaxed">
+              Aura Masale was born out of a passion for traditional Indian cooking. We noticed that modern kitchens were losing the authentic aromas that defined our childhoods. Our mission is to bring back those authentic, rich flavors of traditional Indian spices.
+            </p>
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-orange-500 text-stone-950 font-semibold rounded-md hover:bg-orange-400 transition-all duration-300"
+            >
+              Read Our Story
+            </Link>
+          </div>
+          <div className="lg:w-1/2 flex justify-center">
+            <div className="relative w-72 h-72 rounded-full overflow-hidden border-8 border-stone-800 shadow-2xl">
+              <Image 
+                src="/logo.webp" 
+                alt="Aura Masale" 
+                fill 
+                className="object-contain bg-white p-8"
+              />
             </div>
           </div>
         </div>

@@ -71,7 +71,11 @@ export async function sendOtp(
   })
 
   if (error) {
-    return { error: error.message }
+    console.error('sendOtp Supabase Error:', error)
+    const errorMsg = error.message && error.message !== '{}' 
+      ? error.message 
+      : 'Failed to send OTP. Please check your email configuration or try again.'
+    return { error: errorMsg }
   }
 
   return { success: true }

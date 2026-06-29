@@ -58,7 +58,7 @@ function LoginForm() {
         </h1>
         <p className="text-stone-500 mt-1 text-sm">
           {step === 'email' 
-            ? 'Sign in or create an account to continue' 
+            ? 'Enter your email to sign in or check out as a guest. No passwords required!' 
             : `We sent a 6-digit code to ${email}`}
         </p>
       </div>

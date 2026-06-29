@@ -156,10 +156,13 @@ export function CheckoutClient({ initialItems, addresses, isAuthenticated = true
         
         {!isAuthenticated ? (
           <div className="bg-white rounded-2xl border border-border p-6 lg:p-8">
-            <h2 className="text-xl font-bold text-text mb-6 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-text mb-2 flex items-center gap-2">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white text-sm">1</span>
               Contact Information
             </h2>
+            <p className="text-sm text-stone-500 mb-6 pl-10">
+              Enter your email to checkout as a guest or log in. No passwords required!
+            </p>
             
             {authError && (
               <div className="mb-6 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
@@ -183,7 +186,7 @@ export function CheckoutClient({ initialItems, addresses, isAuthenticated = true
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   />
                   <p className="text-xs text-text-muted mt-2">
-                    We will send a one-time code to verify your order.
+                    We'll send a one-time secure code to this email to confirm your order.
                   </p>
                 </div>
                 <button

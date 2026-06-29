@@ -6,6 +6,12 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Menu, Search, ShoppingCart, User, X } from 'lucide-react'
 import { useCart } from '@/contexts/CartContext'
+import { Playfair_Display } from 'next/font/google'
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['700'],
+})
 
 export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -38,7 +44,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-stone-200 shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-[#F5E6C8] border-b border-[#E8B96A] shadow-sm">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           
@@ -66,7 +72,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 className="h-16 w-auto"
                 priority
               />
-              <span className="text-stone-900 text-xl font-bold tracking-wide uppercase hidden xl:block">
+              <span className={`${playfair.className} text-stone-900 text-2xl font-bold tracking-wide uppercase hidden xl:block`}>
                 Aura Masale
               </span>
             </Link>
@@ -81,7 +87,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 alt="Aura Masale Logo"
                 width={200}
                 height={64}
-                className="h-14 w-auto object-contain"
+                className="h-16 w-auto object-contain scale-110 origin-center"
                 priority
               />
             </Link>
@@ -93,7 +99,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-sm font-semibold leading-6 text-stone-800 hover:text-orange-600 transition-colors uppercase tracking-wider"
+                className="text-base font-semibold leading-6 text-stone-800 hover:text-orange-600 transition-colors uppercase tracking-wider"
               >
                 {link.name}
               </Link>
@@ -110,7 +116,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search spices..."
-                className="w-full rounded-full border border-stone-200 bg-stone-50 py-2 pl-4 pr-10 text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all placeholder:text-stone-500 shadow-inner"
+                className="w-full rounded-full border border-[#E8B96A] bg-stone-50 py-2 pl-4 pr-10 text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-[#E8B96A] focus:border-[#E8B96A] transition-all placeholder:text-stone-500 shadow-inner"
               />
               <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-orange-600 transition-colors">
                 <Search className="h-4 w-4" />
@@ -172,7 +178,7 @@ export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for spices, blends..."
-              className="w-full rounded-full border border-stone-200 bg-white py-3 pl-5 pr-12 text-stone-900 focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-inner"
+              className="w-full rounded-full border border-[#E8B96A] bg-white py-3 pl-5 pr-12 text-stone-900 focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-inner"
             />
             <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-stone-500 hover:text-orange-600 transition-colors">
               <Search className="h-5 w-5" />
