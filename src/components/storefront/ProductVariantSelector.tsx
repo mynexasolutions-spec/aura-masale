@@ -41,11 +41,6 @@ export function ProductVariantSelector({ variants }: { variants: Variant[] }) {
     
     const result = await addToCart(selectedVariant.id, quantity)
     
-    if (result.requiresLogin) {
-      router.push('/login')
-      return
-    }
-
     if (result.success) {
       setAddedSuccess(true)
       refreshCart()
