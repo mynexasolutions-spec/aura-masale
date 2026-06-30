@@ -39,8 +39,8 @@ export function ProductCard({
       </div>
 
       {/* Content Container */}
-      <div className="flex flex-col flex-1 p-5">
-        <h3 className="text-lg font-bold text-text group-hover:text-primary transition-colors line-clamp-1">
+      <div className="flex flex-col flex-1 p-3 sm:p-5">
+        <h3 className="text-base sm:text-lg font-bold text-text group-hover:text-primary transition-colors line-clamp-1">
           {name}
         </h3>
         
@@ -50,15 +50,15 @@ export function ProductCard({
           </p>
         )}
 
-        <div className="mt-auto pt-4 flex items-center justify-between">
+        <div className="mt-auto pt-3 sm:pt-4 flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-xs text-text-muted uppercase tracking-wider font-semibold">Starting from</span>
-            <span className="text-lg font-bold text-primary">
+            <span className="text-[10px] sm:text-xs text-text-muted uppercase tracking-wider font-semibold">Starting from</span>
+            <span className="text-base sm:text-lg font-bold text-primary">
               {minPrice !== null ? `₹${minPrice}` : 'N/A'}
             </span>
           </div>
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </div>
