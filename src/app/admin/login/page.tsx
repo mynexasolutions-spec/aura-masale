@@ -57,7 +57,6 @@ export default function AdminLoginPage() {
                 type="email"
                 autoComplete="email"
                 required
-                placeholder="admin@auramasale.com"
                 className="w-full px-4 py-2.5 rounded-xl border border-stone-700 bg-stone-800/50 text-white placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200"
               />
             </div>
@@ -76,7 +75,6 @@ export default function AdminLoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
-                  placeholder="••••••••"
                   className="w-full px-4 py-2.5 rounded-xl border border-stone-700 bg-stone-800/50 text-white placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all duration-200 pr-11"
                 />
                 <button

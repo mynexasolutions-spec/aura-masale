@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   },
   description:
     "Discover the finest Indian spices at Aura Masale. Premium quality whole spices, ground spices, and spice blends delivered to your doorstep.",
+  icons: {
+    icon: '/logo.webp',
+  },
 };
 
 export default function RootLayout({
