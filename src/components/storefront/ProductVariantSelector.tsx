@@ -20,6 +20,7 @@ export function ProductVariantSelector({ variants }: { variants: Variant[] }) {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(activeVariants.length > 0 ? activeVariants[0] : null)
   const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
+  const [isBuying, setIsBuying] = useState(false)
   const [addedSuccess, setAddedSuccess] = useState(false)
   const router = useRouter()
   const { refreshCart } = useCart()
@@ -50,6 +51,21 @@ export function ProductVariantSelector({ variants }: { variants: Variant[] }) {
     }
     
     setIsAdding(false)
+  }
+
+  const handleBuyNow = async () => {
+    if (!selectedVariant) return
+    setIsBuying(true)
+    
+    const result = await addToCart(selectedVariant.id, quantity)
+    
+    if (result.success) {
+      refreshCart()
+      router.push('/checkout')
+    } else {
+      alert(result.error || 'Failed to add to cart')
+      setIsBuying(false)
+    }
   }
 
   return (
@@ -84,42 +100,56 @@ export function ProductVariantSelector({ variants }: { variants: Variant[] }) {
         </div>
       )}
 
-      {/* Quantity & Add to Cart */}
-      <div className="flex gap-4">
-        <div className="flex items-center border border-border rounded-full bg-white h-12">
-          <button
-            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="px-4 text-text hover:text-primary transition-colors h-full rounded-l-full"
+      {/* Quantity & Actions */}
+      <div className="flex flex-col gap-3">
+        <div className="flex gap-3">
+          <div className="flex items-center border border-border rounded-full bg-white h-12 shrink-0">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="px-4 text-text hover:text-primary transition-colors h-full rounded-l-full"
+            >
+              -
+            </button>
+            <span className="w-8 text-center font-medium text-text">{quantity}</span>
+            <button
+              onClick={() => setQuantity(Math.min(selectedVariant?.stock_quantity || 1, quantity + 1))}
+              className="px-4 text-text hover:text-primary transition-colors h-full rounded-r-full"
+            >
+              +
+            </button>
+          </div>
+          
+          <button 
+            onClick={handleAddToCart}
+            disabled={isAdding || isBuying || addedSuccess}
+            className={`flex-1 font-bold rounded-full h-12 transition-all duration-300 inline-flex items-center justify-center gap-2 ${
+              addedSuccess
+                ? 'bg-green-500 text-white border border-green-500'
+                : 'bg-white border-2 border-primary text-primary hover:bg-primary/5 disabled:opacity-70'
+            }`}
           >
-            -
-          </button>
-          <span className="w-8 text-center font-medium text-text">{quantity}</span>
-          <button
-            onClick={() => setQuantity(Math.min(selectedVariant?.stock_quantity || 1, quantity + 1))}
-            className="px-4 text-text hover:text-primary transition-colors h-full rounded-r-full"
-          >
-            +
+            {isAdding ? (
+              <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+            ) : addedSuccess ? (
+              <>
+                <Check className="w-5 h-5" />
+                Added!
+              </>
+            ) : (
+              'Add to Cart'
+            )}
           </button>
         </div>
-        
+
         <button 
-          onClick={handleAddToCart}
-          disabled={isAdding || addedSuccess}
-          className={`flex-1 font-bold rounded-full h-12 transition-all duration-300 inline-flex items-center justify-center gap-2 ${
-            addedSuccess
-              ? 'bg-green-500 text-white'
-              : 'bg-primary text-white hover:bg-primary-light hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-70'
-          }`}
+          onClick={handleBuyNow}
+          disabled={isAdding || isBuying || addedSuccess}
+          className="w-full font-bold rounded-full h-12 bg-primary text-white hover:bg-primary-light hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 inline-flex items-center justify-center gap-2 disabled:opacity-70"
         >
-          {isAdding ? (
+          {isBuying ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : addedSuccess ? (
-            <>
-              <Check className="w-5 h-5" />
-              Added to Cart!
-            </>
           ) : (
-            'Add to Cart'
+            'Buy Now'
           )}
         </button>
       </div>

@@ -6,6 +6,7 @@ import { ProductImageGallery } from '@/components/storefront/ProductImageGallery
 import { ProductVariantSelector } from '@/components/storefront/ProductVariantSelector'
 import { ProductAccordion } from '@/components/storefront/ProductAccordion'
 import { ProductReviews } from '@/components/storefront/ProductReviews'
+import { ProductCard } from '@/components/storefront/ProductCard'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -75,6 +76,38 @@ export default async function ProductDetailsPage({
       sortedFaqs = globalFaqs
     }
   }
+
+  // Fetch related products (random up to 6)
+  const { data: relatedProductsData } = await supabase
+    .from('products')
+    .select(`
+      id,
+      slug,
+      name,
+      short_description,
+      featured_image_url,
+      product_variants ( price, is_active )
+    `)
+    .neq('id', product.id)
+    .eq('is_active', true)
+    .limit(20)
+
+  // Shuffle and pick 6
+  const shuffled = (relatedProductsData || []).sort(() => 0.5 - Math.random())
+  const relatedProducts = shuffled.slice(0, 6).map((rp: any) => {
+    const activeVariants = rp.product_variants?.filter((v: any) => v.is_active) || []
+    const prices = activeVariants.map((v: any) => v.price)
+    const minPrice = prices.length > 0 ? Math.min(...prices) : null
+
+    return {
+      id: rp.id,
+      slug: rp.slug,
+      name: rp.name,
+      shortDescription: rp.short_description,
+      featuredImage: rp.featured_image_url,
+      minPrice,
+    }
+  })
 
   return (
     <div className="bg-surface py-8">
@@ -200,6 +233,18 @@ export default async function ProductDetailsPage({
                 />
               </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* You May Also Like */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-24 border-t border-border pt-16">
+            <h3 className="text-2xl font-bold text-text mb-8">You May Also Like</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+              {relatedProducts.map((rp) => (
+                <ProductCard key={rp.id} {...rp} />
+              ))}
             </div>
           </div>
         )}

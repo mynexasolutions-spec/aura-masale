@@ -123,7 +123,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
           <div 
             ref={scrollRef}
             onScroll={checkScroll}
-            className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 pt-4 no-scrollbar scroll-smooth"
+            className="grid grid-cols-2 gap-4 sm:gap-6 md:flex md:overflow-x-auto md:snap-x md:snap-mandatory pb-8 pt-4 no-scrollbar scroll-smooth"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {products.map((product) => {
@@ -136,7 +136,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 <Link 
                   key={product.id} 
                   href={`/product/${product.slug}`}
-                  className="group w-[75vw] sm:w-[280px] lg:w-[300px] shrink-0 snap-center sm:snap-start bg-white border border-[#E8B96A] rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
+                  className="group w-full md:w-[280px] lg:w-[300px] shrink-0 md:snap-center lg:snap-start bg-white border border-[#E8B96A] rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
                 >
                   <div className="relative aspect-square w-full bg-stone-100 overflow-hidden">
                     {product.featured_image_url ? (
@@ -159,18 +159,18 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                     )}
                   </div>
                   
-                  <div className="p-5 flex flex-col flex-1">
-                    <h3 className="font-bold text-stone-900 text-lg mb-1 line-clamp-1 group-hover:text-orange-600 transition-colors">{product.name}</h3>
+                  <div className="p-3 sm:p-5 flex flex-col flex-1">
+                    <h3 className="font-bold text-stone-900 text-sm sm:text-lg mb-1 line-clamp-1 group-hover:text-orange-600 transition-colors">{product.name}</h3>
                     
-                    <div className="flex items-center gap-1 mb-3">
-                      <Star className="w-4 h-4 fill-orange-500 text-orange-500" />
-                      <span className="text-sm font-medium text-stone-700">{product.average_rating.toFixed(1)}</span>
-                      <span className="text-sm text-stone-400">({product.review_count})</span>
+                    <div className="flex items-center gap-1 mb-2 sm:mb-3">
+                      <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-orange-500 text-orange-500" />
+                      <span className="text-xs sm:text-sm font-medium text-stone-700">{product.average_rating.toFixed(1)}</span>
+                      <span className="text-[10px] sm:text-sm text-stone-400 hidden sm:inline">({product.review_count})</span>
                     </div>
 
                     <div className="mt-auto flex items-center justify-between">
                       <div className="flex flex-col">
-                        <span className="text-lg font-bold text-stone-900">₹{price}</span>
+                        <span className="text-base sm:text-lg font-bold text-stone-900">₹{price}</span>
                         {hasDiscount && (
                           <span className="text-xs text-stone-400 line-through">₹{originalPrice}</span>
                         )}
@@ -179,7 +179,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                       <button
                         onClick={(e) => handleAddToCart(product, e)}
                         disabled={addingToCart === product.id || addedSuccess === product.id || activeVariants.length === 0}
-                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                           addedSuccess === product.id
                             ? 'bg-green-500 text-white shadow-md'
                             : 'bg-stone-900 text-white hover:bg-orange-600 hover:shadow-md hover:shadow-orange-600/30 active:scale-95'
@@ -187,11 +187,11 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                         aria-label="Add to cart"
                       >
                         {addingToCart === product.id ? (
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         ) : addedSuccess === product.id ? (
-                          <Check className="w-4 h-4" />
+                          <Check className="w-3 h-3 sm:w-4 sm:h-4" />
                         ) : (
-                          <ShoppingCart className="w-4 h-4" />
+                          <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4" />
                         )}
                       </button>
                     </div>
@@ -202,31 +202,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
           </div>
         </div>
         
-        {/* Mobile Navigation Arrows */}
-        <div className="flex md:hidden justify-center gap-4 mt-2">
-          <button
-            onClick={() => scroll('left')}
-            disabled={!canScrollLeft}
-            className={`p-3 rounded-full border border-stone-200 transition-all ${
-              canScrollLeft 
-                ? 'bg-white text-stone-900 active:bg-orange-50 active:border-orange-200 active:text-orange-600 shadow-sm' 
-                : 'bg-stone-50 text-stone-300 cursor-not-allowed'
-            }`}
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => scroll('right')}
-            disabled={!canScrollRight}
-            className={`p-3 rounded-full border border-stone-200 transition-all ${
-              canScrollRight 
-                ? 'bg-white text-stone-900 active:bg-orange-50 active:border-orange-200 active:text-orange-600 shadow-sm' 
-                : 'bg-stone-50 text-stone-300 cursor-not-allowed'
-            }`}
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
+        {/* Mobile Navigation Arrows Removed */}
       </div>
       
       {/* Hide scrollbar globally for webkit in this component using a style tag */}
